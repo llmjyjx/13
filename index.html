@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>洛阳麓道十三舍｜LUDAO HOTEL｜洛阳酒店民宿</title>
+<meta name="description" content="洛阳麓道十三舍（LUDAO HOTEL）是一家位于洛阳的精品民宿酒店。浏览酒店环境与客房图片，了解住宿空间，并在线预定。">
+<meta name="keywords" content="洛阳麓道十三舍,LUDAO HOTEL,洛阳酒店,洛阳民宿,洛阳精品酒店,洛阳住宿,隋唐植物园酒店,洛阳酒店预定">
+<meta name="author" content="洛阳麓道十三舍 LUDAO HOTEL">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="theme-color" content="#111111">
+
+<!-- Open Graph：方便搜索引擎、微信及社交平台识别页面主题 -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="洛阳麓道十三舍 LUDAO HOTEL">
+<meta property="og:title" content="洛阳麓道十三舍｜LUDAO HOTEL｜洛阳酒店民宿">
+<meta property="og:description" content="洛阳麓道十三舍 LUDAO HOTEL 官方静态展示页面，浏览酒店环境图片并进行预定。">
+<meta property="og:locale" content="zh_CN">
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="洛阳麓道十三舍｜LUDAO HOTEL">
+<meta name="twitter:description" content="洛阳麓道十三舍 LUDAO HOTEL｜洛阳精品民宿酒店">
+
+<!-- 搜索引擎结构化数据：Hotel -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Hotel",
+  "name": "洛阳麓道十三舍",
+  "alternateName": "LUDAO HOTEL",
+  "description": "洛阳麓道十三舍 LUDAO HOTEL，洛阳精品民宿酒店。",
+  "image": [
+    "https://dimg04.c-ctrip.com/images//1mc5o12000hsz8qch2D81_R_1080_808_Q90.jpg",
+    "https://dimg04.c-ctrip.com/images//1mc3312000hszagwh8462_R_1080_808_Q90.jpg",
+    "https://dimg04.c-ctrip.com/images//0205112000633j4txFFBE_R_1080_808_Q90.jpg"
+  ],
+  "priceRange": "$$",
+  "telephone": "",
+  "sameAs": [
+    "https://hotels.ctrip.com/hotels/65298860.html"
+  ]
+}
+</script>
+
+<style>
+:root{
+  --title-top: 28px;
+  --booking-size: 270px;
+  --credit-bottom: 22px;
+  --white: rgba(255,255,255,.96);
+}
+
+*{box-sizing:border-box}
+
+.sr-only{
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  white-space:nowrap;
+  border:0;
+}
+
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#111;
+}
+
+body{
+  font-family:
+    "SimSun",
+    "宋体",
+    "STSong",
+    "Noto Serif SC",
+    "Source Han Serif SC",
+    serif;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+/* =========================
+   整版轮播
+   ========================= */
+.hero{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100dvh;
+  overflow:hidden;
+  background:#111;
+}
+
+.slides{
+  position:absolute;
+  inset:0;
+}
+
+.slide{
+  position:absolute;
+  inset:0;
+  margin:0;
+  opacity:0;
+  transform:scale(1.015);
+  transition:
+    opacity 900ms cubic-bezier(.22,.61,.36,1),
+    transform 7s cubic-bezier(.16,1,.3,1);
+}
+
+.slide.active{
+  opacity:1;
+  transform:scale(1);
+}
+
+.slide img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center center;
+  user-select:none;
+  -webkit-user-drag:none;
+}
+
+/* =========================
+   顶部固定品牌
+   文字直接压在图片上
+   无底色、无导航栏
+   ========================= */
+.brand{
+  position:absolute;
+  z-index:20;
+  top:var(--title-top);
+  left:50%;
+  transform:translateX(-50%);
+  width:max-content;
+  text-align:center;
+  color:var(--white);
+  text-shadow:0 1px 10px rgba(0,0,0,.42);
+  pointer-events:none;
+}
+
+.brand-cn{
+  display:block;
+  font-family:
+    "SimSun",
+    "宋体",
+    "STSong",
+    "Noto Serif SC",
+    serif;
+  font-size:30px;
+  font-weight:400;
+  letter-spacing:7px;
+  line-height:1.25;
+  margin-left:7px;
+  white-space:nowrap;
+}
+
+.brand-en{
+  display:block;
+  margin-top:5px;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    "Noto Serif SC",
+    serif;
+  font-size:12px;
+  font-weight:400;
+  letter-spacing:5px;
+  margin-left:5px;
+  line-height:1;
+}
+
+/* =========================
+   预定按钮
+   X=50%
+   Y=38.2% 黄金分割
+   ========================= */
+.booking{
+  position:absolute;
+  z-index:30;
+  left:50%;
+  top:38.2%;
+  width:var(--booking-size);
+  height:58px;
+  transform:translate(-50%,-50%);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  color:#fff;
+  text-decoration:none;
+  border:1px solid rgba(255,255,255,.9);
+  border-radius:30px;
+  background:rgba(20,20,20,.08);
+  backdrop-filter:blur(2px);
+  -webkit-backdrop-filter:blur(2px);
+
+  transition:
+    background .3s ease,
+    transform .3s ease,
+    border-color .3s ease;
+}
+
+.booking span{
+  font-family:
+    "SimSun",
+    "宋体",
+    "STSong",
+    "Noto Serif SC",
+    serif;
+  font-size:14px;
+  letter-spacing:4px;
+  margin-left:4px;
+  text-shadow:0 1px 8px rgba(0,0,0,.45);
+}
+
+.booking:hover{
+  background:rgba(255,255,255,.17);
+  border-color:#fff;
+  transform:translate(-50%,-50%) scale(1.04);
+}
+
+.booking:active{
+  transform:translate(-50%,-50%) scale(.98);
+}
+
+/* =========================
+   底部“李凡作品”
+   ========================= */
+.credit{
+  position:absolute;
+  z-index:30;
+  left:50%;
+  bottom:var(--credit-bottom);
+  transform:translateX(-50%);
+
+  color:rgba(255,255,255,.94);
+  text-decoration:none;
+  font-family:
+    "SimSun",
+    "宋体",
+    "STSong",
+    "Noto Serif SC",
+    serif;
+  font-size:12px;
+  letter-spacing:3px;
+  margin-left:3px;
+  white-space:nowrap;
+  text-shadow:0 1px 8px rgba(0,0,0,.5);
+  transition:opacity .25s ease;
+}
+
+.credit::before,
+.credit::after{
+  content:"";
+  display:inline-block;
+  width:30px;
+  height:1px;
+  margin:0 11px 4px;
+  background:rgba(255,255,255,.75);
+}
+
+.credit:hover{
+  opacity:.7;
+  text-decoration:underline;
+  text-underline-offset:4px;
+}
+
+/* =========================
+   轮播左右切换
+   ========================= */
+.arrow{
+  position:absolute;
+  z-index:25;
+  top:50%;
+  width:52px;
+  height:80px;
+  transform:translateY(-50%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:rgba(255,255,255,.75);
+  background:transparent;
+  border:0;
+  cursor:pointer;
+  font-family:Arial,sans-serif;
+  font-size:30px;
+  font-weight:200;
+  text-shadow:0 1px 8px rgba(0,0,0,.45);
+  opacity:.75;
+  transition:opacity .25s ease;
+}
+
+.arrow:hover{opacity:1}
+.arrow.prev{left:12px}
+.arrow.next{right:12px}
+
+/* =========================
+   底部页码
+   ========================= */
+.counter{
+  position:absolute;
+  z-index:25;
+  right:28px;
+  bottom:22px;
+  color:rgba(255,255,255,.9);
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:11px;
+  letter-spacing:2px;
+  text-shadow:0 1px 8px rgba(0,0,0,.5);
+}
+
+/* =========================
+   手机端
+   ========================= */
+@media (max-width:700px){
+  :root{
+    --title-top:20px;
+    --booking-size:220px;
+    --credit-bottom:18px;
+  }
+
+  .brand-cn{
+    font-size:22px;
+    letter-spacing:5px;
+    margin-left:5px;
+  }
+
+  .brand-en{
+    margin-top:4px;
+    font-size:9px;
+    letter-spacing:3.5px;
+    margin-left:3.5px;
+  }
+
+  .booking{
+    height:52px;
+    border-radius:27px;
+  }
+
+  .booking span{
+    font-size:13px;
+    letter-spacing:3px;
+    margin-left:3px;
+  }
+
+  .credit{
+    font-size:11px;
+    letter-spacing:2px;
+    margin-left:2px;
+  }
+
+  .credit::before,
+  .credit::after{
+    width:22px;
+    margin-left:8px;
+    margin-right:8px;
+  }
+
+  .arrow{
+    width:42px;
+    font-size:26px;
+  }
+
+  .arrow.prev{left:2px}
+  .arrow.next{right:2px}
+
+  .counter{
+    right:15px;
+    bottom:17px;
+    font-size:10px;
+  }
+}
+
+@media (max-width:430px){
+  .brand-cn{
+    font-size:20px;
+    letter-spacing:4px;
+    margin-left:4px;
+  }
+
+  .brand-en{
+    font-size:8px;
+    letter-spacing:3px;
+    margin-left:3px;
+  }
+
+  .booking{
+    width:200px;
+    height:48px;
+  }
+
+  .credit{
+    bottom:16px;
+  }
+
+  .counter{
+    display:none;
+  }
+}
+
+/* 尊重用户减少动画偏好 */
+@media (prefers-reduced-motion:reduce){
+  .slide{
+    transition:opacity .2s ease;
+    transform:none;
+  }
+  .slide.active{
+    transform:none;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<main class="hero" aria-label="洛阳麓道十三舍 LUDAO HOTEL 酒店图片轮播">
+
+  <!-- 固定品牌：直接叠加在轮播图上，无背景 -->
+  <h1 class="sr-only">洛阳麓道十三舍 LUDAO HOTEL｜洛阳精品酒店民宿</h1>
+
+  <div class="brand" aria-label="洛阳麓道十三舍">
+    <span class="brand-cn">洛阳麓道十三舍</span>
+    <span class="brand-en">LUDAO HOTEL</span>
+  </div>
+
+  <div class="slides" id="slides"></div>
+
+  <!-- JS 不可用时仍保留可抓取的酒店文字内容 -->
+  <noscript>
+    <section aria-label="洛阳麓道十三舍酒店简介">
+      <h1>洛阳麓道十三舍 LUDAO HOTEL</h1>
+      <p>洛阳麓道十三舍是一家位于洛阳的精品民宿酒店，提供舒适的住宿空间。欢迎浏览酒店图片并进行预定。</p>
+    </section>
+  </noscript>
+
+  <!-- 预定：X=50%，Y=38.2% -->
+  <a
+    class="booking"
+    href="https://hotels.ctrip.com/hotels/65298860.html"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="预定洛阳麓道十三舍"
+  >
+    <span>预定</span>
+  </a>
+
+  <!-- 左右切换 -->
+  <button class="arrow prev" id="prev" aria-label="上一张">‹</button>
+  <button class="arrow next" id="next" aria-label="下一张">›</button>
+
+  <!-- 底部作品署名，点击跳转抖音 -->
+  <a
+    class="credit"
+    href="https://v.douyin.com/-VNmevCSX58/"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="李凡作品"
+  >李凡作品</a>
+
+  <div class="counter" id="counter">01 / 10</div>
+</main>
+
+<script>
+/*
+ * 图片来自用户指定的携程/猫途鹰酒店公开展示页。
+ * 正式商业部署前，建议确认酒店对图片拥有使用权，并将授权图片放到自己的 CDN/服务器。
+ */
+const images = [
+  "https://dimg04.c-ctrip.com/images//1mc5o12000hsz8qch2D81_R_1080_808_Q90.jpg",
+  "https://dimg04.c-ctrip.com/images//1mc3312000hszagwh8462_R_1080_808_Q90.jpg",
+  "https://dimg04.c-ctrip.com/images//0205112000633j4txFFBE_R_1080_808_Q90.jpg",
+  "https://dimg04.c-ctrip.com/images//1mc4s12000hszhvyk2168_R_1080_808_Q90.jpg",
+  "https://dimg04.c-ctrip.com/images//1mc2g12000hszezl40A73_R_1080_808_Q90.jpg",
+  "https://dimg04.c-ctrip.com/images//1mc0512000hszey955700_R_1080_808_Q90.jpg",
+  "https://dimg04.c-ctrip.com/images//1mc5r12000hszhz92D229_R_1080_808_Q90.jpg",
+  "https://dimg04.c-ctrip.com/images//1mc1d12000hszicsc8929_R_1080_808_Q90.jpg",
+  "https://dimg04.c-ctrip.com/images//1mc5v12000hsziayj332E_R_1080_808_Q90.jpg",
+  "https://dimg04.c-ctrip.com/images//1mc0812000hszioedE88D_R_1080_808_Q90.jpg"
+];
+
+const slides = document.getElementById("slides");
+const counter = document.getElementById("counter");
+const prev = document.getElementById("prev");
+const next = document.getElementById("next");
+
+images.forEach((src, index) => {
+  const figure = document.createElement("figure");
+  figure.className = "slide" + (index === 0 ? " active" : "");
+
+  const img = document.createElement("img");
+  img.src = src;
+  img.alt = "洛阳麓道十三舍酒店照片 " + (index + 1);
+  img.loading = index === 0 ? "eager" : "lazy";
+  img.decoding = "async";
+
+  figure.appendChild(img);
+  slides.appendChild(figure);
+});
+
+const slideEls = [...document.querySelectorAll(".slide")];
+let current = 0;
+let timer = null;
+const interval = 5000;
+
+function updateCounter(){
+  counter.textContent =
+    String(current + 1).padStart(2, "0") +
+    " / " +
+    String(slideEls.length).padStart(2, "0");
+}
+
+function showSlide(index){
+  current = (index + slideEls.length) % slideEls.length;
+
+  slideEls.forEach((slide, i) => {
+    slide.classList.toggle("active", i === current);
+  });
+
+  updateCounter();
+}
+
+function startAutoPlay(){
+  stopAutoPlay();
+  timer = setInterval(() => {
+    showSlide(current + 1);
+  }, interval);
+}
+
+function stopAutoPlay(){
+  if(timer){
+    clearInterval(timer);
+    timer = null;
+  }
+}
+
+prev.addEventListener("click", () => {
+  showSlide(current - 1);
+  startAutoPlay();
+});
+
+next.addEventListener("click", () => {
+  showSlide(current + 1);
+  startAutoPlay();
+});
+
+/* 鼠标悬停暂停 */
+const hero = document.querySelector(".hero");
+
+hero.addEventListener("mouseenter", stopAutoPlay);
+hero.addEventListener("mouseleave", startAutoPlay);
+
+/* 移动端左右滑动 */
+let touchX = 0;
+let touchY = 0;
+
+hero.addEventListener("touchstart", event => {
+  const touch = event.changedTouches[0];
+  touchX = touch.clientX;
+  touchY = touch.clientY;
+  stopAutoPlay();
+}, {passive:true});
+
+hero.addEventListener("touchend", event => {
+  const touch = event.changedTouches[0];
+  const dx = touch.clientX - touchX;
+  const dy = touch.clientY - touchY;
+
+  if(Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)){
+    showSlide(current + (dx < 0 ? 1 : -1));
+  }
+
+  startAutoPlay();
+}, {passive:true});
+
+updateCounter();
+startAutoPlay();
+</script>
+
+</body>
+</html>
