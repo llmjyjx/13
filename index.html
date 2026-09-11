@@ -590,306 +590,160 @@ body{
 </main>
 
 <script>
-
 const images = Array.from(
   { length: 49 },
   (_, i) => `./img/1 (${i + 1}).jpg`
 );
 
-function shuffle(array){
-
+function shuffle(array) {
   const result = [...array];
-
-  for(
-    let i = result.length - 1;
-    i > 0;
-    i--
-  ){
-
-    const j =
-      Math.floor(
-        Math.random() * (i + 1)
-      );
-
-    [
-      result[i],
-      result[j]
-    ] =
-    [
-      result[j],
-      result[i]
-    ];
-
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
   }
-
   return result;
-
 }
 
-const randomImages =
-  shuffle(images);
+const randomImages = shuffle(images);
+const slides = document.getElementById("slides");
+const prev = document.getElementById("prev");
+const next = document.getElementById("next");
 
-const slides =
-  document.getElementById("slides");
+// 创建所有 slide（先不显示）
+const slideEls = [];
+const loadedIndexes = new Set(); // 已加载完成的索引
 
-const prev =
-  document.getElementById("prev");
+randomImages.forEach((src, index) => {
+  const figure = document.createElement("figure");
+  figure.className = "slide" + (index === 0 ? " active" : "");
 
-const next =
-  document.getElementById("next");
+  const img = document.createElement("img");
+  img.src = src;
+  img.alt = `洛阳麓道十三舍 LUDAO HOTEL 酒店环境照片 ${index + 1}`;
+  img.decoding = "async";
 
-randomImages.forEach(
-  (src, index) => {
+  // 第一张优先加载，其余先懒加载，后面再预加载
+  img.loading = index === 0 ? "eager" : "lazy";
 
-    const figure =
-      document.createElement("figure");
-
-    figure.className =
-      "slide" +
-      (
-        index === 0
-          ? " active"
-          : ""
-      );
-
-    const img =
-      document.createElement("img");
-
-    img.src =
-      src;
-
-    const match =
-      src.match(/\((\d+)\)/);
-
-    const number =
-      match
-        ? match[1]
-        : index + 1;
-
-    img.alt =
-      `洛阳麓道十三舍 LUDAO HOTEL 酒店环境照片 ${number}`;
-
-    img.loading =
-      index === 0
-        ? "eager"
-        : "lazy";
-
-    img.decoding =
-      "async";
-
-    figure.appendChild(img);
-
-    slides.appendChild(figure);
-
+  // 记录加载完成
+  img.onload = () => {
+    loadedIndexes.add(index);
+  };
+  // 已经缓存的情况
+  if (img.complete) {
+    loadedIndexes.add(index);
   }
-);
 
-const slideEls =
-  [
-    ...document.querySelectorAll(".slide")
-  ];
+  figure.appendChild(img);
+  slides.appendChild(figure);
+  slideEls.push(figure);
+});
 
 let current = 0;
-
 let timer = null;
-
 const interval = 5000;
 
-function showSlide(index){
+function showSlide(index) {
+  if (slideEls.length === 0) return;
 
-  if(
-    slideEls.length === 0
-  ){
+  current = (index + slideEls.length) % slideEls.length;
 
-    return;
-
-  }
-
-  current =
-    (
-      index +
-      slideEls.length
-    )
-    %
-    slideEls.length;
-
-  slideEls.forEach(
-    (slide, i) => {
-
-      slide.classList.toggle(
-        "active",
-        i === current
-      );
-
-    }
-  );
-
+  slideEls.forEach((slide, i) => {
+    slide.classList.toggle("active", i === current);
+  });
 }
 
-function showRandomSlide(){
+// 只从已加载完成的图片中随机选
+function showRandomSlide() {
+  const ready = [...loadedIndexes].filter(i => i !== current);
 
-  if(
-    slideEls.length <= 1
-  ){
+  // 如果暂时没有其他已加载的图，就保持当前
+  if (ready.length === 0) return;
 
-    return;
-
-  }
-
-  let nextIndex;
-
-  do{
-
-    nextIndex =
-      Math.floor(
-        Math.random() *
-        slideEls.length
-      );
-
-  }
-  while(
-    nextIndex === current
-  );
-
-  showSlide(
-    nextIndex
-  );
-
+  const nextIndex = ready[Math.floor(Math.random() * ready.length)];
+  showSlide(nextIndex);
 }
 
-function startAutoPlay(){
-
+function startAutoPlay() {
   stopAutoPlay();
-
-  timer =
-    setInterval(
-      () => {
-
-        showRandomSlide();
-
-      },
-      interval
-    );
-
+  timer = setInterval(() => {
+    showRandomSlide();
+  }, interval);
 }
 
-function stopAutoPlay(){
-
-  if(
-    timer !== null
-  ){
-
+function stopAutoPlay() {
+  if (timer !== null) {
     clearInterval(timer);
-
     timer = null;
-
   }
-
 }
 
-prev.addEventListener(
-  "click",
-  () => {
+// ========== 预加载核心 ==========
+function preloadImages() {
+  // 从第 2 张开始后台预加载
+  randomImages.forEach((src, index) => {
+    if (index === 0) return;
 
-    showRandomSlide();
+    const img = new Image();
+    img.src = src;
+    img.onload = () => {
+      loadedIndexes.add(index);
+    };
+    // 已缓存
+    if (img.complete) {
+      loadedIndexes.add(index);
+    }
+  });
+}
 
-    startAutoPlay();
+// 页面空闲时再预加载，减少首屏压力
+if ("requestIdleCallback" in window) {
+  requestIdleCallback(preloadImages, { timeout: 2000 });
+} else {
+  setTimeout(preloadImages, 800);
+}
 
-  }
-);
+// 按钮事件
+prev.addEventListener("click", () => {
+  showRandomSlide();
+  startAutoPlay();
+});
+next.addEventListener("click", () => {
+  showRandomSlide();
+  startAutoPlay();
+});
 
-next.addEventListener(
-  "click",
-  () => {
+// 鼠标悬停暂停
+const hero = document.querySelector(".hero");
+hero.addEventListener("mouseenter", stopAutoPlay);
+hero.addEventListener("mouseleave", startAutoPlay);
 
-    showRandomSlide();
-
-    startAutoPlay();
-
-  }
-);
-
-const hero =
-  document.querySelector(".hero");
-
-hero.addEventListener(
-  "mouseenter",
-  () => {
-
-    stopAutoPlay();
-
-  }
-);
-
-hero.addEventListener(
-  "mouseleave",
-  () => {
-
-    startAutoPlay();
-
-  }
-);
-
+// 触摸滑动
 let touchX = 0;
-
 let touchY = 0;
 
-hero.addEventListener(
-  "touchstart",
-  event => {
+hero.addEventListener("touchstart", (event) => {
+  const touch = event.changedTouches[0];
+  touchX = touch.clientX;
+  touchY = touch.clientY;
+  stopAutoPlay();
+}, { passive: true });
 
-    const touch =
-      event.changedTouches[0];
+hero.addEventListener("touchend", (event) => {
+  const touch = event.changedTouches[0];
+  const dx = touch.clientX - touchX;
+  const dy = touch.clientY - touchY;
 
-    touchX =
-      touch.clientX;
-
-    touchY =
-      touch.clientY;
-
-    stopAutoPlay();
-
-  },
-  {
-    passive:true
+  if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) {
+    showRandomSlide();
   }
-);
+  startAutoPlay();
+}, { passive: true });
 
-hero.addEventListener(
-  "touchend",
-  event => {
-
-    const touch =
-      event.changedTouches[0];
-
-    const dx =
-      touch.clientX -
-      touchX;
-
-    const dy =
-      touch.clientY -
-      touchY;
-
-    if(
-      Math.abs(dx) > 45 &&
-      Math.abs(dx) > Math.abs(dy)
-    ){
-
-      showRandomSlide();
-
-    }
-
-    startAutoPlay();
-
-  },
-  {
-    passive:true
-  }
-);
-
+// 启动
 startAutoPlay();
-
 </script>
+
 
 </body>
 
