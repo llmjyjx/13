@@ -693,7 +693,7 @@ bgm.addEventListener("ended", () => {
   }
   playRandomBgm();
 });
-// ========== 抖音爱心效果 ==========
+// ========== 抖音爱心效果（仅双击触发） ==========
 const heartSymbols = ["❤", "❤️", "💕", "💗", "💖"];
 function createHeart(x, y) {
   const heart = document.createElement("div");
@@ -716,42 +716,19 @@ function isInsideBrand(x, y) {
     y <= rect.bottom
   );
 }
-let isTouching = false;
-let lastHeartTime = 0;
-function handleHeart(x, y) {
-  if (isInsideBrand(x, y)) return; // 标题区域内不生成爱心
-  const now = Date.now();
-  if (now - lastHeartTime < 80) return; // 控制频率
-  lastHeartTime = now;
-  createHeart(x, y);
-}
-// 鼠标按住滑动出爱心
-hero.addEventListener("mousedown", (e) => {
+// 仅双击出爱心（标题、按钮等区域除外）
+hero.addEventListener("dblclick", (e) => {
   if (e.target.closest(".brand") || e.target.closest(".booking") || e.target.closest(".arrow") || e.target.closest(".credit")) return;
-  isTouching = true;
-  handleHeart(e.clientX, e.clientY);
-});
-hero.addEventListener("mousemove", (e) => {
-  if (!isTouching) return;
-  handleHeart(e.clientX, e.clientY);
-});
-document.addEventListener("mouseup", () => {
-  isTouching = false;
-});
-// 触摸连续出爱心
-hero.addEventListener("touchstart", (e) => {
-  if (e.target.closest(".brand") || e.target.closest(".booking") || e.target.closest(".arrow") || e.target.closest(".credit")) return;
-  isTouching = true;
-  const touch = e.touches[0];
-  handleHeart(touch.clientX, touch.clientY);
-}, { passive: true });
-hero.addEventListener("touchmove", (e) => {
-  if (!isTouching) return;
-  const touch = e.touches[0];
-  handleHeart(touch.clientX, touch.clientY);
-}, { passive: true });
-hero.addEventListener("touchend", () => {
-  isTouching = false;
+  if (isInsideBrand(e.clientX, e.clientY)) return;
+  // 双击时在点击位置生成若干爱心
+  for (let i = 0; i < 5; i++) {
+    setTimeout(() => {
+      createHeart(
+        e.clientX + (Math.random() * 40 - 20),
+        e.clientY + (Math.random() * 40 - 20)
+      );
+    }, i * 60);
+  }
 });
 // 按钮事件 —— 仅切换图片，不控制音乐
 prev.addEventListener("click", () => {
@@ -791,7 +768,7 @@ hero.addEventListener("touchend", (event) => {
 }, { passive: true });
 // 启动轮播
 startAutoPlay();
-// 默认尝试自动播放 BGM（受浏览器自动播放策略限制，可能需要用户首次交互后才能成功）
+// 默认不播放，仅标题双击可控制播放/暂停
 tryPlayBgm();
 </script>
 </body>
