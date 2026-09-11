@@ -475,18 +475,22 @@ body{
  * 图片来自用户指定的携程/猫途鹰酒店公开展示页。
  * 正式商业部署前，建议确认酒店对图片拥有使用权，并将授权图片放到自己的 CDN/服务器。
  */
-const images = [
-  "https://dimg04.c-ctrip.com/images//1mc5o12000hsz8qch2D81_R_1080_808_Q90.jpg",
-  "https://dimg04.c-ctrip.com/images//1mc3312000hszagwh8462_R_1080_808_Q90.jpg",
-  "https://dimg04.c-ctrip.com/images//0205112000633j4txFFBE_R_1080_808_Q90.jpg",
-  "https://dimg04.c-ctrip.com/images//1mc4s12000hszhvyk2168_R_1080_808_Q90.jpg",
-  "https://dimg04.c-ctrip.com/images//1mc2g12000hszezl40A73_R_1080_808_Q90.jpg",
-  "https://dimg04.c-ctrip.com/images//1mc0512000hszey955700_R_1080_808_Q90.jpg",
-  "https://dimg04.c-ctrip.com/images//1mc5r12000hszhz92D229_R_1080_808_Q90.jpg",
-  "https://dimg04.c-ctrip.com/images//1mc1d12000hszicsc8929_R_1080_808_Q90.jpg",
-  "https://dimg04.c-ctrip.com/images//1mc5v12000hsziayj332E_R_1080_808_Q90.jpg",
-  "https://dimg04.c-ctrip.com/images//1mc0812000hszioedE88D_R_1080_808_Q90.jpg"
-];
+<!-- const images = [ -->
+  <!-- "https://dimg04.c-ctrip.com/images//1mc5o12000hsz8qch2D81_R_1080_808_Q90.jpg", -->
+  <!-- "https://dimg04.c-ctrip.com/images//1mc3312000hszagwh8462_R_1080_808_Q90.jpg", -->
+  <!-- "https://dimg04.c-ctrip.com/images//0205112000633j4txFFBE_R_1080_808_Q90.jpg", -->
+  <!-- "https://dimg04.c-ctrip.com/images//1mc4s12000hszhvyk2168_R_1080_808_Q90.jpg", -->
+  <!-- "https://dimg04.c-ctrip.com/images//1mc2g12000hszezl40A73_R_1080_808_Q90.jpg", -->
+  <!-- "https://dimg04.c-ctrip.com/images//1mc0512000hszey955700_R_1080_808_Q90.jpg", -->
+  <!-- "https://dimg04.c-ctrip.com/images//1mc5r12000hszhz92D229_R_1080_808_Q90.jpg", -->
+  <!-- "https://dimg04.c-ctrip.com/images//1mc1d12000hszicsc8929_R_1080_808_Q90.jpg", -->
+  <!-- "https://dimg04.c-ctrip.com/images//1mc5v12000hsziayj332E_R_1080_808_Q90.jpg", -->
+  <!-- "https://dimg04.c-ctrip.com/images//1mc0812000hszioedE88D_R_1080_808_Q90.jpg" -->
+<!-- ]; -->
+const images = Array.from(
+  { length: 52 },
+  (_, i) => `./img/1 (${i + 1}).jpg`
+);
 
 const slides = document.getElementById("slides");
 const counter = document.getElementById("counter");
