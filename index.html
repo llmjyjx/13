@@ -198,7 +198,10 @@ body{
   text-align:center;
   color:var(--white);
   text-shadow:0 1px 10px rgba(0,0,0,.42);
-  pointer-events:none;
+  cursor:pointer;
+  user-select:none;
+  -webkit-user-select:none;
+  pointer-events:auto;
 }
 .brand-cn{
   display:block;
@@ -340,6 +343,31 @@ body{
 .arrow.next{
   right:12px;
 }
+/* 抖音爱心效果 */
+.heart{
+  position:fixed;
+  pointer-events:none;
+  z-index:100;
+  font-size:28px;
+  color:#fe2c55;
+  user-select:none;
+  animation:heartFloat 1.1s ease-out forwards;
+  text-shadow:0 0 6px rgba(254,44,85,.45);
+}
+@keyframes heartFloat{
+  0%{
+    opacity:1;
+    transform:translate(-50%,-50%) scale(0.4) rotate(0deg);
+  }
+  15%{
+    opacity:1;
+    transform:translate(-50%,-60%) scale(1.25) rotate(-12deg);
+  }
+  100%{
+    opacity:0;
+    transform:translate(-50%,-180%) scale(1.1) rotate(15deg);
+  }
+}
 @media (max-width:700px){
   :root{
     --title-top:20px;
@@ -415,6 +443,10 @@ body{
   .slide.active{
     transform:none;
   }
+  .heart{
+    animation:none;
+    opacity:0;
+  }
 }
 </style>
 </head>
@@ -428,6 +460,7 @@ body{
 </h1>
 <div
   class="brand"
+  id="brand"
   aria-label="洛阳麓道十三舍 LUDAO HOTEL"
 >
   <span class="brand-cn">
@@ -491,8 +524,6 @@ body{
 </a>
 <audio
   id="bgm"
-  src="./bgm/bgm.mp3"
-  loop
   preload="auto"
   playsinline
   style="display:none"
@@ -516,9 +547,11 @@ const slides = document.getElementById("slides");
 const prev = document.getElementById("prev");
 const next = document.getElementById("next");
 const bgm = document.getElementById("bgm");
-// 创建所有 slide（先不显示）
+const brand = document.getElementById("brand");
+const hero = document.querySelector(".hero");
+// 创建所有 slide
 const slideEls = [];
-const loadedIndexes = new Set(); // 已加载完成的索引
+const loadedIndexes = new Set();
 randomImages.forEach((src, index) => {
   const figure = document.createElement("figure");
   figure.className = "slide" + (index === 0 ? " active" : "");
@@ -526,16 +559,9 @@ randomImages.forEach((src, index) => {
   img.src = src;
   img.alt = `洛阳麓道十三舍 LUDAO HOTEL 酒店环境照片 ${index + 1}`;
   img.decoding = "async";
-  // 第一张优先加载，其余先懒加载，后面再预加载
   img.loading = index === 0 ? "eager" : "lazy";
-  // 记录加载完成
-  img.onload = () => {
-    loadedIndexes.add(index);
-  };
-  // 已经缓存的情况
-  if (img.complete) {
-    loadedIndexes.add(index);
-  }
+  img.onload = () => loadedIndexes.add(index);
+  if (img.complete) loadedIndexes.add(index);
   figure.appendChild(img);
   slides.appendChild(figure);
   slideEls.push(figure);
@@ -550,19 +576,15 @@ function showSlide(index) {
     slide.classList.toggle("active", i === current);
   });
 }
-// 只从已加载完成的图片中随机选
 function showRandomSlide() {
   const ready = [...loadedIndexes].filter(i => i !== current);
-  // 如果暂时没有其他已加载的图，就保持当前
   if (ready.length === 0) return;
   const nextIndex = ready[Math.floor(Math.random() * ready.length)];
   showSlide(nextIndex);
 }
 function startAutoPlay() {
   stopAutoPlay();
-  timer = setInterval(() => {
-    showRandomSlide();
-  }, interval);
+  timer = setInterval(showRandomSlide, interval);
 }
 function stopAutoPlay() {
   if (timer !== null) {
@@ -570,71 +592,186 @@ function stopAutoPlay() {
     timer = null;
   }
 }
-// ========== 预加载核心 ==========
 function preloadImages() {
-  // 从第 2 张开始后台预加载
   randomImages.forEach((src, index) => {
     if (index === 0) return;
     const img = new Image();
     img.src = src;
-    img.onload = () => {
-      loadedIndexes.add(index);
-    };
-    // 已缓存
-    if (img.complete) {
-      loadedIndexes.add(index);
-    }
+    img.onload = () => loadedIndexes.add(index);
+    if (img.complete) loadedIndexes.add(index);
   });
 }
-// 页面空闲时再预加载，减少首屏压力
 if ("requestIdleCallback" in window) {
   requestIdleCallback(preloadImages, { timeout: 2000 });
 } else {
   setTimeout(preloadImages, 800);
 }
-// ========== BGM 播放逻辑 ==========
+// ========== 随机 BGM ==========
+const musicList = Array.from(
+  { length: 4 },
+  (_, i) => `./bgm/1 (${i + 1}).mp3`
+);
 let bgmStarted = false;
+let isPlaying = false;
+let fadeTimer = null;
+function getRandomMusic() {
+  return musicList[Math.floor(Math.random() * musicList.length)];
+}
+function getRandomStartTime() {
+  return 50 + Math.random() * 100; // 50~150秒
+}
+// 6秒渐强：0 → 0.3
+function fadeInVolume(duration = 6000, targetVolume = 0.3) {
+  if (fadeTimer) {
+    clearInterval(fadeTimer);
+    fadeTimer = null;
+  }
+  bgm.volume = 0;
+  const start = performance.now();
+  fadeTimer = setInterval(() => {
+    const elapsed = performance.now() - start;
+    const progress = Math.min(elapsed / duration, 1);
+    bgm.volume = progress * targetVolume;
+    if (progress >= 1) {
+      clearInterval(fadeTimer);
+      fadeTimer = null;
+      bgm.volume = targetVolume;
+    }
+  }, 30);
+}
+function playRandomBgm() {
+  if (!bgm) return;
+  const src = getRandomMusic();
+  const startTime = getRandomStartTime();
+  bgm.src = src;
+  bgm.load();
+  const onCanPlay = () => {
+    bgm.removeEventListener("canplay", onCanPlay);
+    const maxStart = Math.max(0, (bgm.duration || 200) - 10);
+    bgm.currentTime = Math.min(startTime, maxStart);
+    bgm.play().then(() => {
+      bgmStarted = true;
+      isPlaying = true;
+      fadeInVolume(6000, 0.3); // 6秒渐强到 30%
+    }).catch(() => {});
+  };
+  bgm.addEventListener("canplay", onCanPlay);
+}
 function tryPlayBgm() {
-  if (bgmStarted || !bgm) return;
-  const playPromise = bgm.play();
-  if (playPromise !== undefined) {
-    playPromise
-      .then(() => {
-        bgmStarted = true;
-      })
-      .catch(() => {
-        // 自动播放被拦截，等待用户交互
-      });
+  if (bgmStarted && isPlaying) return;
+  if (bgmStarted && !isPlaying) {
+    // 已加载过，直接恢复播放 + 渐强
+    bgm.play().then(() => {
+      isPlaying = true;
+      fadeInVolume(6000, 0.3);
+    }).catch(() => {});
+    return;
+  }
+  playRandomBgm();
+}
+function toggleBgm() {
+  if (!bgm) return;
+  if (isPlaying) {
+    bgm.pause();
+    isPlaying = false;
+    if (fadeTimer) {
+      clearInterval(fadeTimer);
+      fadeTimer = null;
+    }
+    bgm.volume = 0; // 暂停后重置音量
+  } else {
+    tryPlayBgm();
   }
 }
-// 尝试自动播放
-tryPlayBgm();
-// 任意用户交互后启动 BGM
-function onFirstInteraction() {
-  tryPlayBgm();
-  document.removeEventListener("click", onFirstInteraction);
-  document.removeEventListener("touchstart", onFirstInteraction);
-  document.removeEventListener("keydown", onFirstInteraction);
+// 歌曲结束后自动换下一首
+bgm.addEventListener("ended", () => {
+  bgmStarted = false;
+  isPlaying = false;
+  if (fadeTimer) {
+    clearInterval(fadeTimer);
+    fadeTimer = null;
+  }
+  playRandomBgm();
+});
+// ========== 抖音爱心效果 ==========
+const heartSymbols = ["❤", "❤️", "💕", "💗", "💖"];
+function createHeart(x, y) {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+  heart.style.left = x + "px";
+  heart.style.top = y + "px";
+  // 轻微随机偏移
+  heart.style.marginLeft = (Math.random() * 20 - 10) + "px";
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 1100);
 }
-document.addEventListener("click", onFirstInteraction, { once: true });
-document.addEventListener("touchstart", onFirstInteraction, { once: true, passive: true });
-document.addEventListener("keydown", onFirstInteraction, { once: true });
-// 按钮事件
+// 判断点是否在 brand 区域内
+function isInsideBrand(x, y) {
+  const rect = brand.getBoundingClientRect();
+  return (
+    x >= rect.left &&
+    x <= rect.right &&
+    y >= rect.top &&
+    y <= rect.bottom
+  );
+}
+let isTouching = false;
+let lastHeartTime = 0;
+function handleHeart(x, y) {
+  if (isInsideBrand(x, y)) return; // 标题区域内不生成爱心
+  const now = Date.now();
+  if (now - lastHeartTime < 80) return; // 控制频率
+  lastHeartTime = now;
+  createHeart(x, y);
+}
+// 鼠标按住滑动出爱心
+hero.addEventListener("mousedown", (e) => {
+  if (e.target.closest(".brand") || e.target.closest(".booking") || e.target.closest(".arrow") || e.target.closest(".credit")) return;
+  isTouching = true;
+  handleHeart(e.clientX, e.clientY);
+});
+hero.addEventListener("mousemove", (e) => {
+  if (!isTouching) return;
+  handleHeart(e.clientX, e.clientY);
+});
+document.addEventListener("mouseup", () => {
+  isTouching = false;
+});
+// 触摸连续出爱心
+hero.addEventListener("touchstart", (e) => {
+  if (e.target.closest(".brand") || e.target.closest(".booking") || e.target.closest(".arrow") || e.target.closest(".credit")) return;
+  isTouching = true;
+  const touch = e.touches[0];
+  handleHeart(touch.clientX, touch.clientY);
+}, { passive: true });
+hero.addEventListener("touchmove", (e) => {
+  if (!isTouching) return;
+  const touch = e.touches[0];
+  handleHeart(touch.clientX, touch.clientY);
+}, { passive: true });
+hero.addEventListener("touchend", () => {
+  isTouching = false;
+});
+// 按钮事件 —— 仅切换图片，不控制音乐
 prev.addEventListener("click", () => {
   showRandomSlide();
   startAutoPlay();
-  tryPlayBgm();
 });
 next.addEventListener("click", () => {
   showRandomSlide();
   startAutoPlay();
-  tryPlayBgm();
 });
-// 鼠标悬停暂停
-const hero = document.querySelector(".hero");
+// 标题双击：播放 / 暂停
+brand.addEventListener("dblclick", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  toggleBgm();
+});
+// 鼠标悬停暂停轮播
 hero.addEventListener("mouseenter", stopAutoPlay);
 hero.addEventListener("mouseleave", startAutoPlay);
-// 触摸滑动
+// 触摸滑动切换图片（不再触发播放）
 let touchX = 0;
 let touchY = 0;
 hero.addEventListener("touchstart", (event) => {
@@ -651,10 +788,11 @@ hero.addEventListener("touchend", (event) => {
     showRandomSlide();
   }
   startAutoPlay();
-  tryPlayBgm();
 }, { passive: true });
-// 启动
+// 启动轮播
 startAutoPlay();
+// 默认尝试自动播放 BGM（受浏览器自动播放策略限制，可能需要用户首次交互后才能成功）
+tryPlayBgm();
 </script>
 </body>
 </html>
