@@ -197,10 +197,11 @@ body{
   width:max-content;
   text-align:center;
   color:var(--white);
-  text-shadow:0 1px 10px rgba(0,0,0,.42);
   cursor:pointer;
   user-select:none;
   -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
   pointer-events:auto;
 }
 .brand-cn{
@@ -217,6 +218,13 @@ body{
   line-height:1.25;
   margin-left:7px;
   white-space:nowrap;
+  /* 不可选中 + 阴影 */
+  user-select:none;
+  -webkit-user-select:none;
+  text-shadow:
+    0 1px 3px rgba(0,0,0,.55),
+    0 2px 8px rgba(0,0,0,.35),
+    0 0 12px rgba(0,0,0,.25);
 }
 .brand-en{
   display:block;
@@ -230,6 +238,11 @@ body{
   letter-spacing:5px;
   margin-left:5px;
   line-height:1;
+  user-select:none;
+  -webkit-user-select:none;
+  text-shadow:
+    0 1px 3px rgba(0,0,0,.5),
+    0 2px 6px rgba(0,0,0,.3);
 }
 .booking{
   position:absolute;
